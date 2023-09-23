@@ -448,5 +448,25 @@ describe("saml.ts", function () {
         );
       });
     });
+    describe("_requestToUrlAsync", function () {
+      it("should throw a error when operation is unknown", async () => {
+        const samlObj = new SAML({
+          callbackUrl: "http://localhost/saml/consume",
+          entryPoint: "https://exampleidp.com/path?key=value",
+          cert: FAKE_CERT,
+          issuer: "onesaml_login",
+          audience: false,
+        });
+        try {
+          await samlObj._requestToUrlAsync("test_request", null, "unknown_value", {})
+          assert.fail("should have thrown an error")
+        } catch (e) {
+          if (!(e instanceof Error)) {
+            assert.fail("should have thrown an error")
+          }
+          expect(e.message).to.equal("Unknown operation: unknown_value");
+        }
+      });
+    });
   });
 });
